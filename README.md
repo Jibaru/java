@@ -11,9 +11,16 @@ Conceptos de Java
 - [Sentencias](expressions-statements-blocks.md)
 - [Bloques](expressions-statements-blocks.md)
 - [Control de flujo](control-flow-statements.md)
-- [Clases](classes.md)
+- Clases 
+  - [Clases](classes.md)
+  - [Objetos](objects.md)
+  - [Más sobre las clases](classes-2.md)
 
 - [Static](static-override-methods.md#static)
 - [Sobreescritura de métodos](static-override-methods.md#override-methods)
 - [InstanceOf](instanceof.md#instanceof)
 - [Singleton](singleton.md#singleton)
+
+## Refs
+
+Recopilado de : [Documentación oficial](https://docs.oracle.com/javase/tutorial)
