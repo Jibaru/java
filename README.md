@@ -15,6 +15,9 @@ Conceptos de Java
   - [Clases](classes.md)
   - [Objetos](objects.md)
   - [Más sobre las clases](classes-2.md)
+  - [Clases anidadas](nested-classes.md)
+- [Lambdas](lambda-expressions.md)
+- [¿Cuándo usar clases anidadas y lambdas?](when-to-use-nested-classes-and-lambda-expressions.md)
 
 - [Static](static-override-methods.md#static)
 - [Sobreescritura de métodos](static-override-methods.md#override-methods)
