@@ -152,5 +152,36 @@ Adicionalmente una clase local puede acceder a las variables locales siempre que
 
 ## [Clases anónimas](#anonymous-classes)
 
+Una clase anónima es una expresión. La sintaxis es similar a la invoación de un constructor, sólo que en esta se define la clase en un bloque:
 
+```java
+HelloWorld frenchGreeting = new HelloWorld() {
+    String name = "tout le monde";
+    public void greet() {
+        greetSomeone("tout le monde");
+    }
+    public void greetSomeone(String someone) {
+        name = someone;
+        System.out.println("Salut " + name);
+    }
+};
+```
 
+La expresión consiste de:
+
+- El operador `new`
+- El nombre de la `interface` a implementar o `clase` a extender.
+- Paréntesis, que contiene argumentos al constructor (solo para clases, cuando se implementa una interfaz se dejan vacíos).
+- El cuerpo de la clase.
+
+### [Accediendo a variables locales, declarando y accediendo a miembros de la clase anónima](#accessing-local-variables-of-the-enclosing-scope,-and-declaring-and-accessing-members-of-the-anonymous-class)
+
+Una clase anónima:
+
+- Puede acceder a los miembros de la clase que la encierra.
+- No puede acceder a variables locales de fuera que no sean `final` o `efectivamente final`.
+- Igual que en las clases anidadas, la declaración de un tipo `ensombrece` otras declaraciones de fuera con el mismo nombre.
+- No puede tener `inicializadores static` o `interfaces miembro`.
+- Puede tener `miembros static` siempre que sean `constantes`.
+- Puede tener: `campos`, `métodos extra`, `inicializadores de variables de instancia`, `clases locales`.
+- No es posible declarar constructores.
