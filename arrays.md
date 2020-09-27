@@ -117,4 +117,4 @@ Para la mayor cantidad de operaciones con arreglos utilice la clase `java.util.A
 - Buscar en el arreglo un valor específico para obtener el índice (`binarySearch`).
 - Comparar arreglos (`equals`).
 - Llenar un arreglo hasta un determinado índice (`fill`).
-- Ordenar un arreglo en forma ascendente. Puede usar `sort`, y si quiere un ordenamiento paralelo use `parallelSort`. 
+- Ordenar un arreglo en forma ascendente. Puede usar `sort`, y si quiere un ordenamiento paralelo use `parallelSort`.
