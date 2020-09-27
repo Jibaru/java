@@ -255,3 +255,42 @@ Por ejemplo, si quieres que un tipo de variable particular nunca sea asignado a 
 Cuando compile el código, incluyendo `NonNull` en la línea de comandos, el compilador mostrará las advertencias si detecta un problema , proveendo la capacidad de poder modificar el código para corregir dichos problemas.
 
 Puede usar [el framework checker](https://checkerframework.org/) si no desea escribir un plug.
+
+## [Repitiendo anotaciones](#repeating-annotations)
+
+Es posible repetir anotaciones a una declaración o uso de tipo.
+
+```java
+@Alert(role="Manager")
+@Alert(role="Administrator")
+public class UnauthorizedAccessException extends SecurityException { ... }
+```
+
+Por razones de compatibilidad, las anotaciones repetidas son guardadas en un contenedor de anotaciones que es generado automáticamente por el compilador de Java. Para lograrlo, es necesario que la anotación posea lo siguiente:
+
+- **Declarar la anotación como repetible:**
+
+La anotación que se podrá repetir debe estar marcada con `@Repetable`.
+
+```java
+import java.lang.annotation.Repeatable;
+
+@Repeatable(Schedules.class)
+public @interface Schedule {
+  String dayOfMonth() default "first";
+  String dayOfWeek() default "Mon";
+  int hour() default 12;
+}
+```
+
+El valor de lo que está entre paréntesis es el tipo del contenedor de la anotación, para este caso, el contenedor generado será de tipo `Schedules` y las anotaciones repetidas de tipo `@Schedule` se almacenarán allí.
+
+- **Declarar el tipo del contenedor de anotaciones:**
+
+El contenedor de las anotaciones repetidas posee un elemento `value` que es un arreglo.
+
+```java
+public @interface Schedules {
+    Schedule[] value();
+}
+```
