@@ -162,3 +162,168 @@ public class RectanglePlus
 
 **Nota:** Observe que en la implementación de la interfaz, el método `isLarguerThan` recibe un objeto de tipo `Relatable` y este es casteado a `RectanglePlus`. Si no fuese así, el compilador no podría entender de que tipo es el objeto y fallaría la compilación.
 
+## [Usando una interfaz como un tipo](#using-an-interface-as-a-type)
+
+Cuando defines una nueva interfaz, defines una nueva referencia a un tipo de dato. Puedes usar los nombres de las interfaces en cualquier lugar que uses otro tipo de dato. Si defines una variable de referencia cuyo tipo de dato es una interfaz, cualquier objeto que asignes debe cumplir que debe ser una instancia de la clase que implemente dicha interfaz.
+
+```java
+public Object findLargest(Object object1, Object object2) {
+   Relatable obj1 = (Relatable)object1;
+   Relatable obj2 = (Relatable)object2;
+   if ((obj1).isLargerThan(obj2) > 0)
+      return object1;
+   else 
+      return object2;
+}
+```
+
+En el método `findLargest` funcionará siempre que object1 y object2 sean pertenezcan a clases que implementen la interfaz `Relatable`.
+
+## [Evolucionando interfaces](#evolving-interfaces)
+
+Si se quiere agregar funcionalidad (métodos) a una interfaz, puede que tenga problemas con clases que implementen dicha interfaz, puesto que tendría que implementar en todas las clases la nueva funcionalidad agregada.
+
+Considere la siguiente interfaz:
+
+```java
+public interface DoIt {
+   void doSomething(int i, double x);
+   int doSomethingElse(String s);
+}
+```
+
+Si se desea agregar un método más:
+
+```java
+public interface DoIt {
+
+   void doSomething(int i, double x);
+   int doSomethingElse(String s);
+   boolean didItWork(int i, double x, String s);
+   
+}
+```
+
+En todas las clases que se implemente dicha interfaz habrá que implementar el nuevo método (que puede resultar engorroso).
+
+Una opción sería crear una nueva interfaz que herede de la anterior y que el lugar donde se necesite implementar el nuevo método ahora la implemente.
+
+```java
+public interface DoItPlus extends DoIt {
+
+   boolean didItWork(int i, double x, String s);
+   
+}
+```
+
+Otra alternativa es usar `métodos por defecto`:
+
+```java
+public interface DoIt {
+
+   void doSomething(int i, double x);
+   int doSomethingElse(String s);
+   default boolean didItWork(int i, double x, String s) {
+       // Method body 
+   }
+   
+}
+```
+
+## [Métodos por defecto](#default-methods)
+
+Proveen una forma de agregar nueva funcionalidad a interfaces, manteniendo la compatibilidad con código escrito para versiones anteriores de dichas interfaces.
+
+```java
+public interface TimeClient {
+    void setTime(int hour, int minute, int second);
+    void setDate(int day, int month, int year);
+    void setDateAndTime(int day, int month, int year,
+                               int hour, int minute, int second);
+    LocalDateTime getLocalDateTime();
+    
+    static ZoneId getZoneId (String zoneString) {
+        try {
+            return ZoneId.of(zoneString);
+        } catch (DateTimeException e) {
+            System.err.println("Invalid time zone: " + zoneString +
+                "; using default time zone instead.");
+            return ZoneId.systemDefault();
+        }
+    }
+        
+    default ZonedDateTime getZonedDateTime(String zoneString) {
+        return ZonedDateTime.of(getLocalDateTime(), getZoneId(zoneString));
+    }
+}
+```
+
+Note que la signatura del método está precedida por `default`. Además el método no es abstracto.
+
+### [Extendiendo interfaces que contienen métodos por defecto](#extending-interfaces-that-contain-default-methods)
+
+Cuando extiendas una interfaz que contenga métodos por defecto, tener en cuenta:
+
+- El método por defecto se va a heredar.
+- Redeclarar el método por defecto lo hace abstracto.
+- Redefinir el método lo sobreescribe.
+
+Por ejemplo, si se hereda de la interfaz anterior:
+
+```java
+public interface AnotherTimeClient extends TimeClient { }
+```
+
+Cualquier clase que implemente `AnotherTimeClient` tendrá la implementación del método `TimeClient.getZoneDateTime`.
+
+Ahora, suponiendo que hace lo siguiente:
+
+```java
+public interface AbstractZoneTimeClient extends TimeClient {
+    public ZonedDateTime getZonedDateTime(String zoneString);
+}
+```
+
+Cualquier clase que implemente `AbstractZoneTimeClient` tendrá que implementar el método `getZonedDateTime`.
+
+Finalmente, si redefine el método:
+
+```java
+public interface HandleInvalidTimeZoneClient extends TimeClient {
+    default public ZonedDateTime getZonedDateTime(String zoneString) {
+        try {
+            return ZonedDateTime.of(getLocalDateTime(),ZoneId.of(zoneString)); 
+        } catch (DateTimeException e) {
+            System.err.println("Invalid zone ID: " + zoneString +
+                "; using the default time zone instead.");
+            return ZonedDateTime.of(getLocalDateTime(),ZoneId.systemDefault());
+        }
+    }
+}
+```
+
+Cualquier clase que implemente `HandleInvalidTimeZoneClient` tendrá el método `getZonedDateTime` con una implementación por defecto y no tendrá que implementarlo.
+
+## [Métodos Static](#static-methods)
+
+En adición a los métodos por defecto, también puede definir `métodos static` en interfaces.
+
+```java
+public interface TimeClient {
+    // ...
+    static public ZoneId getZoneId (String zoneString) {
+        try {
+            return ZoneId.of(zoneString);
+        } catch (DateTimeException e) {
+            System.err.println("Invalid time zone: " + zoneString +
+                "; using default time zone instead.");
+            return ZoneId.systemDefault();
+        }
+    }
+
+    default public ZonedDateTime getZonedDateTime(String zoneString) {
+        return ZonedDateTime.of(getLocalDateTime(), getZoneId(zoneString));
+    }    
+}
+```
+
